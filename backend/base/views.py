@@ -2,7 +2,21 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 
 from .models import Score
-  
+
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from .serializers import ScoreSerializer
+
+@api_view(['GET'])
+def getScores(request):
+    scores = Score.objects.all().order_by('-score_value')
+
+
+
+    ser = ScoreSerializer(scores, many = True)
+    return Response(ser.data)
+
+
 def home(request): 
     return render(request, "cardgame.html") 
 
@@ -22,8 +36,6 @@ def snake(request):
 @login_required
 def tictactoe(request): 
     return render(request, "tictactoe.html")
-
-
 
 # API ENDPOINT
 @login_required
